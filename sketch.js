@@ -10,7 +10,7 @@ function setup() {
 }
 
 function draw() {
-  background(255);
+  background(238,239,233,255);
   noStroke();
   let x = 0;
   while (x < height) {
