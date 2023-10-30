@@ -1,12 +1,13 @@
-let colors = ["#cc3300", "#cc6600", "#cc9966", "#669999", "#003333"];
+let colors = ["#cc3300", "#cc6600", "#cc9966", "#669999"];
 let numberOfBoxes = 16;
 let rows = 0;
-let boxWidth = 10;
+let boxWidth = 20;
+let prevColor, selectedColor;
 
-let shapes = [];
+let widths = [60, 40, 90, 130, 70];
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(windowWidth, windowHeight);
   noStroke();
   noLoop();
   rectMode(CENTER);
@@ -34,20 +35,23 @@ function draw() {
   // }
 
   for (let x = boxWidth; x < width; x += boxWidth) {
+    console.log(rectX, rectY);
     for (let y = boxWidth; y < height; y += boxWidth) {
-      let selectedColor = random(colors);
-      // let boxWidth = widths[i];
-      fill(selectedColor);
+      rectX = random(0, width).toFixed();
+      rectY = random(0, height).toFixed();
+      selectedColor = random(colors);
+      if (prevColor && (x + y) % 3 === 0) {
+        fill(prevColor);
+      } else {
+        fill(selectedColor);
+        prevColor = selectedColor;
+      }
+
       rect(x, y, boxWidth);
     }
-    rows++;
-    // while (width % rows == 0) {
-    //   fill(238, 239, 233);
-    //   rect(rows / boxWidth, 195, 40, 200);
-    // }
   }
+}
 
-  console.log(width % rows);
-  // fill(255);
-  // rect(85, 205, 200, 300);
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
