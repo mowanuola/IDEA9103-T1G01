@@ -1,5 +1,7 @@
-let colors = ["#FFFFFF", "#cc3300", "#cc6600", "#cc9966", "#669999", "#003333"];
+let colors = ["#cc3300", "#cc6600", "#cc9966", "#669999", "#003333"];
 let numberOfBoxes = 16;
+let rows = 0;
+let boxWidth = 10;
 
 let shapes = [];
 
@@ -31,13 +33,21 @@ function draw() {
   //   x += maxSize;
   // }
 
-  for (let x = 0; x < width; x += 60) {
-    for (let y = 0; y < height; y += 60) {
+  for (let x = boxWidth; x < width; x += boxWidth) {
+    for (let y = boxWidth; y < height; y += boxWidth) {
       let selectedColor = random(colors);
       // let boxWidth = widths[i];
       fill(selectedColor);
-      rect(x, y, 60);
-      noStroke();
+      rect(x, y, boxWidth);
     }
+    rows++;
+    // while (width % rows == 0) {
+    //   fill(238, 239, 233);
+    //   rect(rows / boxWidth, 195, 40, 200);
+    // }
   }
+
+  console.log(width % rows);
+  // fill(255);
+  // rect(85, 205, 200, 300);
 }
