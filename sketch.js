@@ -1,10 +1,9 @@
 let colors = ["#cc3300", "#cc6600", "#cc9966", "#669999"];
-let numberOfBoxes = 16;
-let rows = 0;
+let columns = 0;
 let boxWidth = 20;
 let prevColor, selectedColor;
-
-let widths = [60, 40, 90, 130, 70];
+let x;
+let y;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -34,21 +33,30 @@ function draw() {
   //   x += maxSize;
   // }
 
-  for (let x = boxWidth; x < width; x += boxWidth) {
-    console.log(rectX, rectY);
-    for (let y = boxWidth; y < height; y += boxWidth) {
-      rectX = random(0, width).toFixed();
-      rectY = random(0, height).toFixed();
-      selectedColor = random(colors);
-      if (prevColor && (x + y) % 3 === 0) {
-        fill(prevColor);
-      } else {
-        fill(selectedColor);
-        prevColor = selectedColor;
-      }
-
+  for (x = boxWidth; x < width; x += boxWidth) {
+    for (y = boxWidth; y < height; y += boxWidth) {
+      let noiseColor = noise(x * 0.05, y * 0.05) * colors.length;
+      fill(colors[floor(noiseColor)]);
+      // selectedColor = random(colors);
+      // if (prevColor && (x + y) % 3 === 0) {
+      //   fill(prevColor);
+      // } else {
+      //   fill(selectedColor);
+      //   prevColor = selectedColor;
+      // }
       rect(x, y, boxWidth);
+      for (let i = 0; i < columns; i += 10) {
+        console.log(constrain(x, x, x + boxWidth));
+        fill(238, 239, 233, 255);
+        rect(
+          constrain(x, x + boxWidth, width),
+          constrain(y, y + boxWidth, width),
+          40
+        );
+      }
     }
+
+    columns++;
   }
 }
 
