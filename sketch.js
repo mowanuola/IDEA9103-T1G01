@@ -33,7 +33,7 @@ function draw() {
   rect(boxWidth / 2, 590, boxWidth * columns, boxWidth);
   rect(370, 690, boxWidth * 16, boxWidth);
   rect(690, 150, boxWidth * 16, boxWidth);
-  rect(990, 160, boxWidth, boxWidth * 11);
+  rect(990, 150, boxWidth, boxWidth * 12);
   rect(1090, 610, boxWidth, boxWidth * 13);
   rect(1230, 610, boxWidth, boxWidth * 13);
   rect(1270, 990, boxWidth * 26, boxWidth);
@@ -72,8 +72,8 @@ class Rectangle {
   }
 
   draw() {
-    // stroke(random(colors));
-    // strokeWeight(2);
+    stroke(random(colors));
+    strokeWeight(2);
     fill(this.color);
     rect(this.xPos, this.yPos, this.w, this.h);
   }
