@@ -27,6 +27,7 @@ function draw() {
   rect(290, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(370, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(690, boxWidth / 2, boxWidth, boxWidth * columns);
+  rect(770, 610, boxWidth * 9, boxWidth * 13);
   rect(1190, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(1270, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(boxWidth / 2, 290, boxWidth * columns, boxWidth);
@@ -40,6 +41,33 @@ function draw() {
   rect(1230, 610, boxWidth, boxWidth * 13);
   rect(1270, 990, boxWidth * 26, boxWidth);
   rect(130, boxWidth / 2, boxWidth, boxWidth * 14);
+  rect(850, 710, boxWidth * 4, boxWidth * 4);
+  rect(320, 325, boxWidth * 2, boxWidth * 1.5);
+  rect(410, 910, boxWidth * 10, boxWidth * 5);
+  rect(1220, 410, boxWidth * 2, boxWidth * 8);
+  rect(1330, 50, boxWidth * 21, boxWidth * 10);
+  rect(750, 210, boxWidth * 10, boxWidth * 3);
+  rect(50, 430, boxWidth * 10, boxWidth * 6);
+  rect(50, 930, boxWidth * 10, boxWidth * 4);
+  rect(470, 610, boxWidth * 6, boxWidth * 4);
+  rect(1550, 910, boxWidth * 12, boxWidth * 4);
+  let strokeA = random(colors);
+  let strokeB = random(colors);
+  let strokeC = random(colors);
+  let strokeD = random(colors);
+  fill(strokeA);
+  stroke(strokeA);
+  rect(770, 670, boxWidth * 9, boxWidth * 7);
+  fill(strokeB);
+  stroke(strokeB);
+  rect(470, 930, boxWidth * 6, boxWidth * 2);
+  fill(strokeC);
+  stroke(strokeC);
+  rect(1220, 450, boxWidth * 2, boxWidth * 4);
+  fill(strokeD);
+  stroke(strokeD);
+  rect(810, 210, boxWidth * 4, boxWidth * 3);
+  rect(110, 930, boxWidth * 4, boxWidth * 4);
 }
 
 function createGrid() {
