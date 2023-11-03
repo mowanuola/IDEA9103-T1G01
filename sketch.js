@@ -21,6 +21,8 @@ function draw() {
     rect.draw();
   }
   rectMode(CORNER);
+  stroke(238, 239, 233, 255);
+  strokeWeight(2);
   fill(238, 239, 233, 255);
   rect(290, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(370, boxWidth / 2, boxWidth, boxWidth * columns);
