@@ -70,6 +70,10 @@ function draw() {
   rect(110, 930, boxWidth * 4, boxWidth * 4);
 }
 
+function mouseMoved() {
+  redraw();
+}
+
 function createGrid() {
   for (x = boxWidth; x < width; x += boxWidth) {
     columns++;
@@ -98,10 +102,18 @@ class Rectangle {
     this.yPos = y;
     this.w = w;
     this.h = h;
-    this.color = color;
+    this.calculateColor();
+  }
+
+  calculateColor() {
+    let distance = dist(mouseX, mouseY, this.xPos, this.yPos);
+    let proximity = map(distance, 0, width, 1, 0);
+    let index = floor(proximity * colors.length);
+    this.color = colors[index];
   }
 
   draw() {
+    this.calculateColor();
     stroke(random(colors));
     strokeWeight(2);
     fill(this.color);
