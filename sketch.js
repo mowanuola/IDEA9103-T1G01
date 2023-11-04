@@ -133,3 +133,10 @@ function rectanglesIntersect(recta1, recta2) {
 function roundValueUp(value) {
   return ceil(value / boxWidth) * boxWidth;
 }
+
+function mousePressed() {
+  fill(0);
+  stroke(255);
+  ellipse(mouseX, mouseY, 100, 100);
+  return false;
+}
