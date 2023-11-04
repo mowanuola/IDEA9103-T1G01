@@ -61,9 +61,17 @@ function draw() {
   fill(strokeB);
   stroke(strokeB);
   rect(470, 930, boxWidth * 6, boxWidth * 2);
+ 
   fill(strokeC);
   stroke(strokeC);
   rect(1220, 450, boxWidth * 2, boxWidth * 4);
+  textSize(25);
+  fill(0);
+  text("Move your mouse", 1220 + 150, 125);
+  text("to make the eye follow you!", 1220 + 150, 150);
+  text("Click to add a pupil!", 1220 + 150, 200);
+
+ 
   fill(strokeD);
   stroke(strokeD);
   rect(810, 210, boxWidth * 4, boxWidth * 3);
