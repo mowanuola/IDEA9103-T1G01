@@ -1,4 +1,5 @@
 let colors = ["#cc3300", "#cc6600", "#cc9966", "#669999"];
+// Width of each individual rectangle
 let boxWidth = 20;
 let rectangles = [];
 
@@ -9,6 +10,7 @@ function setup() {
   frameRate(5);
 }
 
+// Create a grid of rectangles
 function createGrid() {
   columns = Math.floor(height / boxWidth);
   rectangles = []; 
@@ -28,7 +30,7 @@ function draw() {
   for (let rect of rectangles) {
     rect.draw();
   }
-  drawStaticShapes();
+  drawStaticShapes(); // Draw the static white and big colored rectangels on the top of the background
 }
 
 function drawStaticShapes() {
@@ -36,11 +38,12 @@ function drawStaticShapes() {
   noStroke();
 
   let time = millis();
-  let changeValue = sin(time * 0.001) * 800;
+  let changeValue = sin(time * 0.001) * 800; // The length of the changing white rectangles
   let duration = 6000;
-  let transparency = (sin(time * TWO_PI / duration) + 1) /2;
+  let transparency = (sin(time * TWO_PI / duration) + 1) /2; // The change of the transparency of the white rectangles
   let numberScale = transparency * 255;
 
+  // Draw the rectangles over the background
   fill(238, 239, 233, numberScale);
   rect(290, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(370, boxWidth / 2, boxWidth, boxWidth * columns);
@@ -70,6 +73,7 @@ function drawStaticShapes() {
   rect(470, 610, boxWidth * 6, boxWidth * 4);
   rect(1550, 910, boxWidth * 12, boxWidth * 4);
 
+  // Randomize stroke colors for certain rectangles
   let strokeA = random(colors);
   let strokeB = random(colors);
   let strokeC = random(colors);
@@ -96,6 +100,7 @@ function drawStaticShapes() {
   noStroke();
 }
 
+// Resize the canvas when the winsow size changes
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   createGrid();
@@ -110,6 +115,7 @@ class Rectangle {
     this.timeOffset = random(1000);
   }
 
+  // Draw the rectangles with a time-based animation effect
   draw() {
     let time = millis() / 1000 + this.timeOffset;
     
