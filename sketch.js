@@ -6,36 +6,41 @@ let y;
 let innerRects = [];
 let availableOffsets = [2.4, 4.2, 3, 0.3, 1.15, 0.6, 4.5, 0.6];
 let rectangles = [];
-let scl = 1.55;// The scale of the frame
-let frameWid, frameHei;// The width and height of the frame
-let girdNumColumn = 95;
-let barScl = 0.013;// The scale of the bar
-let barWid;// The width of the bar
-let gridSize; // The size of the grid
-let whiteBoxs = [];// The array for white boxes
-let littleBoxs = [];// The array for little boxes
-
+let scl = 1.55
+let frameWid, frameHei
+let music
+let girdNumColumn = 95
+let barScl = 0.013
+let barWid
+let gridSize
+let whiteBoxs = []
+let littleBoxs = []
+let fft
+function preload() {
+  music = loadSound("jingle.mp3")
+}
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  // noLoop();
   noStroke();
   rectMode(CENTER);
 
-  setFrame()// Calculate frame width and height 
+  setFrame()
 
   createGrid();
+  fft = new p5.FFT(); // 创建FFT对象
+
 }
 function setFrame() {
-  // A function that decides whether the frame should be set based on the height or the width of the canvas, depending on the canvas' aspect ratio
-  // Set the frame size based on the current canvas dimensions
-  if (width > height * scl) {
+   if (width > height * scl) {
     frameHei = height * 0.85
     frameWid = frameHei * scl
   } else {
     frameWid = width * 0.85
     frameHei = frameWid / scl;
-  }
+  } imageMode(CENTER)
   barWid = frameWid * barScl
-  // Adding boxes that can be clicked to change
+  // Add interactive boxes that can change when clicked
   whiteBoxs = []
   whiteBoxs.push(new WhiteBox(-0.436, -0.112, 0.105, 0.1, false))
   whiteBoxs.push(new WhiteBox(-0.335, -0.236, 0.023, 0.025, false))
@@ -48,11 +53,10 @@ function setFrame() {
   whiteBoxs.push(new WhiteBox(0.300, -0.394, 0.222, 0.164, true))
   whiteBoxs.push(new WhiteBox(0.368, 0.276, 0.127, 0.083, false))
   littleBoxs = []
-  let minR = 0.05, maxR = 0.08// Set the random range for the spacing of little rectangles
-  // Add little rectangles for each row and column
- 
+  let minR = 0.05, maxR = 0.08 // Set the random range for the increase in spacing between little rectangles
+  // Add little rectangles to each row and column
 
-  //Adding horizontal little rectangles
+  // Adding horizontal little rectangles
   for (let sx = -0.5; sx < 0.5; sx += random(minR, maxR)) {
     littleBoxs.push(new LittleBox(sx, -0.27, 1, 0))
   }
@@ -63,7 +67,7 @@ function setFrame() {
   } for (let sx = -0.5; sx < 0.5; sx += random(minR, maxR)) {
     littleBoxs.push(new LittleBox(sx, 0.208, -1, 0))
   }
-  //Adding vertical little rectangles
+  // Adding vertical little rectangles
   for (let sy = -0.5; sy < 0.5; sy += random(minR, maxR)) {
     littleBoxs.push(new LittleBox(-0.36, sy, 0, -1))
   } for (let sy = -0.5; sy < 0.5; sy += random(minR, maxR)) {
@@ -94,19 +98,19 @@ function draw() {
   fill(255)
 
   // rect(width/2,mouseY,frameWid,barWid)
-  // Drawing large horizontal bars
+  // Draw large horizontal bars
   rect(width / 2, height / 2 - 0.27 * frameHei, frameWid + 10, barWid)
   rect(width / 2, height / 2 - 0.02 * frameHei, frameWid + 10, barWid)
   rect(width / 2, height / 2 - 0.203 * frameHei, frameWid + 10, barWid)
   rect(width / 2, height / 2 + 0.208 * frameHei, frameWid + 10, barWid)
-  // Drawing large vertical bars
+  // Draw large vertical bars
   rect(width / 2 - 0.36 * frameWid, height / 2, barWid, frameHei + gridSize)
   rect(width / 2 - 0.31 * frameWid, height / 2, barWid, frameHei + gridSize)
   rect(width / 2 - 0.14 * frameWid, height / 2, barWid, frameHei + gridSize)
   rect(width / 2 + 0.12 * frameWid, height / 2, barWid, frameHei + gridSize)
   rect(width / 2 + 0.16 * frameWid, height / 2, barWid, frameHei + gridSize)
 
-  // Drawing short bars
+  // Draw short bars
   rect(width / 2 - 0.44 * frameWid, height / 2 - 0.389 * frameHei, barWid, frameHei * 0.23 + gridSize)
   rect(width / 2 - 0.227 * frameWid, height / 2 + 0.06 * frameHei, frameWid * 0.17, barWid)
   rect(width / 2 + 0.068 * frameWid, height / 2 + 0.094 * frameHei, barWid, frameHei * 0.23)
@@ -116,10 +120,20 @@ function draw() {
   rect(width / 2 + 0.015 * frameWid, height / 2 - 0.33 * frameHei, barWid, frameHei * 0.11)
   rect(width / 2 + 0.244 * frameWid, height / 2 + 0.307 * frameHei, frameWid * 0.18, barWid)
 
-  // Drawing all the moving little boxes
+  let spectrum = fft.analyze(); // Get the frequency spectrum data
 
+  // Calculate the volume
+  let sum = 0;
+  for (let i = 0; i < spectrum.length; i++) {
+    sum += spectrum[i];
+     // Sum all the volumes across the frequency bands
+  }
+  // Divide the total by the number of bands to get the average volume
+  let volume = sum / spectrum.length;
+
+  // Draw all the moving little boxes
   for (let lb of littleBoxs) {
-    lb.draw();
+    lb.move(volume*0.25);
     lb.draw();
   }
 }
@@ -128,6 +142,8 @@ let cx, cy;
 
 
 function mousePressed() {
+  music.loop()
+
   // print(nfc(mouseY/height,3))
   // print(nfc((mouseY-height/2)/frameHei,3))
 
@@ -165,13 +181,20 @@ function mousePressed() {
 
 
 function createGrid() {
-
+  // for (x = boxWidth; x < width; x += boxWidth) {
+  //   columns++;
+  //   for (y = boxWidth; y < height; y += boxWidth) {
+  //     let rectangle;
+  //     rectangle = new Rectangle(x, y, boxWidth);
+  //     rectangles.push(rectangle);
+  //   }
+  // }
   rectangles = [];
- // Readjust the position of the colored rectangles to be confined within the frame
+  // Readjust the drawing positions of the colored rectangles to confine them within the frame
   gridSize = frameWid / girdNumColumn
   // Calculate the size of the grid
   let gridNumRow = frameHei / gridSize
-   // Calculate the number of rows in the grid
+  // Calculate the number of rows in the grid
   for (let i = 0; i < girdNumColumn; i++) {
     for (let j = 0; j < gridNumRow; j++) {
       let x = i * gridSize + width / 2 - frameWid / 2 + gridSize / 2
@@ -182,13 +205,19 @@ function createGrid() {
     }
   }
 
-
+  // for (x = width / 2 - frameWid / 2 + boxWidth; x < width / 2 + frameWid / 2 - boxWidth; x += boxWidth) {
+  //   columns++;
+  //   for (y = height / 2 - frameHei / 2 + boxWidth; y <= height / 2 + frameHei / 2 - boxWidth / 1.5; y += boxWidth) {
+  //     let rectangle;
+  //     rectangle = new Rectangle(x, y, boxWidth);
+  //     rectangles.push(rectangle);
+  //   }
+  // }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   // After the canvas size changes, recalculate the frame size and recreate the grid of blocks
-  setFrame();
   setFrame()
   createGrid()
 
@@ -244,7 +273,8 @@ class WhiteBox {
     this.initH = frameHei * h
     this.w = frameWid * w
     this.h = frameHei * h
-    // Set the state of whether to draw a colored square inside the rectangle
+    // Set whether the rectangle should draw a colored square inside
+  this.colorState = state;
     this.colorState = state
     // Randomly generate a color for the small rectangle
     this.col = random(colors)
@@ -255,10 +285,10 @@ class WhiteBox {
     noStroke()
     rect(this.x, this.y, this.w, this.h)
     if (this.colorState) {
-      // If the rectangle should draw a colored inner rectangle
+       // If the state is true, draw a colored inner rectangle
 
       fill(this.col)
-       // Determine if the large rectangle is wider than it is tall, and draw an inner rectangle accordingly
+       // Determine if the rectangle is horizontal or vertical and draw an inner rectangle accordingly
       if (this.h > this.w) {
         rect(this.x, this.y, this.w, this.w)
       } else {
@@ -273,9 +303,9 @@ class WhiteBox {
     } else { return false }
   }
   change() {
-     // Randomly change the width, height, and color of the rectangle
+    // Randomly change the width, height, and color of the rectangle
     this.col = random(colors)
-    // Let the rectangle randomize a new width and height based on the initial dimensions
+     // Randomize a new width and height for the rectangle based on its initial dimensions
     this.w = random(this.initW * 0.8, this.initW * 1.1)
     this.h = random(this.initH * 0.8, this.initH * 1.1)
   }
@@ -285,25 +315,27 @@ class LittleBox {
 
   // Moving little block class
   constructor(sx, sy, vx, vy) {
-     // Set the coordinates of the rectangle
+    // Set the coordinates of the rectangle
     this.x = width / 2 + sx * frameWid
     this.y = height / 2 + sy * frameHei
-     // Set the coordinates of the rectangle
+    // Set the size of the rectangle
     this.w = barWid
-   // Randomly generate a color for the small rectangle
+     // Randomly generate a color for the small rectangle
     this.col = random(colors)
-    // Set the velocity in x and y direction
     this.vx = vx
     this.vy = vy
   }
+  move(spd) {
+    // Move the little rectangle
+    this.x += this.vx * spd
+    this.y += this.vy * spd
+  }
   draw() {
-    // Make the little rectangle move
-    this.x += this.vx
-    this.y += this.vy
+
     // Draw the rectangle
     fill(this.col)
     noStroke()
-    rect(this.x, this.y, this.w, this.w)
+    
     if (this.x + this.w / 2 > width / 2 + frameWid / 2) {
       this.x = width / 2 - frameWid / 2 + this.w / 2
     }
@@ -316,6 +348,8 @@ class LittleBox {
     if (this.y - this.w / 2 < height / 2 - frameHei / 2) {
       this.y = height / 2 + frameHei / 2 - this.w / 2
     }
+    rect(this.x, this.y, this.w, this.w)
+
   }
 
 }
