@@ -1,31 +1,16 @@
 let colors = ["#cc3300", "#cc6600", "#cc9966", "#669999"];
-let columns = 0;
 let boxWidth = 20;
-let x;
-let y;
-let innerRects = [];
-let availableOffsets = [2.4, 4.2, 3, 0.3, 1.15, 0.6, 4.5, 0.6];
 let rectangles = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
   rectMode(CENTER);
-  frameRate(5); // Set the frame rate to control the speed of animation
+  frameRate(5);
 }
 
-function draw() {
-  background(238, 239, 233, 255);
-  createGrid();
-  // Draw the animated rectangles with time-based effects
-  for (let rect of rectangles) {
-    rect.draw();
-  }
-
-  drawStaticShapes();
-  
-  
 function createGrid() {
+  columns = Math.floor(height / boxWidth);
   rectangles = []; 
   for (let x = boxWidth; x < width; x += boxWidth) {
     for (let y = boxWidth; y < height; y += boxWidth) {
@@ -35,11 +20,26 @@ function createGrid() {
   }
 }
 
+function draw() {
+  background(238, 239, 233, 255);
+  columns = Math.floor(height / boxWidth);
+  createGrid();
+  
+  for (let rect of rectangles) {
+    rect.draw();
+  }
+  drawStaticShapes();
+}
+
+  
 function drawStaticShapes() {
   rectMode(CORNER);
-  strokeWeight(2);
+  noStroke();
 
-  // Drawing white rectangles from the original code
+  let time = millis();
+  let oscillatingValue = sin(time * 0.001) * 800;
+
+
   stroke(238, 239, 233, 255);
   fill(238, 239, 233, 255);
   rect(290, boxWidth / 2, boxWidth, boxWidth * columns);
@@ -48,16 +48,16 @@ function drawStaticShapes() {
   rect(770, 610, boxWidth * 9, boxWidth * 13);
   rect(1190, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(1270, boxWidth / 2, boxWidth, boxWidth * columns);
-  rect(boxWidth / 2, 290, boxWidth * columns, boxWidth);
-  rect(boxWidth / 2, 370, boxWidth * columns, boxWidth);
-  rect(boxWidth / 2, 870, boxWidth * columns, boxWidth);
-  rect(boxWidth / 2, 590, boxWidth * columns, boxWidth);
-  rect(370, 690, boxWidth * 16, boxWidth);
-  rect(690, 150, boxWidth * 16, boxWidth);
+  rect(boxWidth / 2, 290, (boxWidth * columns) + oscillatingValue, boxWidth);
+  rect(boxWidth / 2, 370, (boxWidth * columns) + oscillatingValue, boxWidth);
+  rect(boxWidth / 2, 870, (boxWidth * columns) + oscillatingValue, boxWidth);
+  rect(boxWidth / 2, 590, (boxWidth * columns) + oscillatingValue, boxWidth);
+  rect(370, 690, (boxWidth * 16) + oscillatingValue, boxWidth);
+  rect(690, 150, (boxWidth * 16) + oscillatingValue, boxWidth);
   rect(990, 150, boxWidth, boxWidth * 12);
   rect(1090, 610, boxWidth, boxWidth * 13);
   rect(1230, 610, boxWidth, boxWidth * 13);
-  rect(1270, 990, boxWidth * 26, boxWidth);
+  rect(1270, 990, (boxWidth * 26) + oscillatingValue, boxWidth);
   rect(130, boxWidth / 2, boxWidth, boxWidth * 14);
   rect(850, 710, boxWidth * 4, boxWidth * 4);
   rect(320, 325, boxWidth * 2, boxWidth * 1.5);
@@ -70,7 +70,7 @@ function drawStaticShapes() {
   rect(470, 610, boxWidth * 6, boxWidth * 4);
   rect(1550, 910, boxWidth * 12, boxWidth * 4);
 
-  // Drawing colored rectangles with random color selection
+ 
   let strokeA = random(colors);
   let strokeB = random(colors);
   let strokeC = random(colors);
@@ -92,7 +92,6 @@ function drawStaticShapes() {
   stroke(strokeD);
   rect(810, 210, boxWidth * 4, boxWidth * 3);
   rect(110, 930, boxWidth * 4, boxWidth * 4);
-}
 
   rectMode(CENTER);
   noStroke();
