@@ -31,33 +31,33 @@ function draw() {
   drawStaticShapes();
 }
 
-  
 function drawStaticShapes() {
   rectMode(CORNER);
   noStroke();
 
   let time = millis();
-  let oscillatingValue = sin(time * 0.001) * 800;
+  let changeValue = sin(time * 0.001) * 800;
+  let duration = 6000;
+  let transparency = (sin(time * TWO_PI / duration) + 1) /2;
+  let numberScale = transparency * 255;
 
-
-  stroke(238, 239, 233, 255);
-  fill(238, 239, 233, 255);
+  fill(238, 239, 233, numberScale);
   rect(290, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(370, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(690, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(770, 610, boxWidth * 9, boxWidth * 13);
   rect(1190, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(1270, boxWidth / 2, boxWidth, boxWidth * columns);
-  rect(boxWidth / 2, 290, (boxWidth * columns) + oscillatingValue, boxWidth);
-  rect(boxWidth / 2, 370, (boxWidth * columns) + oscillatingValue, boxWidth);
-  rect(boxWidth / 2, 870, (boxWidth * columns) + oscillatingValue, boxWidth);
-  rect(boxWidth / 2, 590, (boxWidth * columns) + oscillatingValue, boxWidth);
-  rect(370, 690, (boxWidth * 16) + oscillatingValue, boxWidth);
-  rect(690, 150, (boxWidth * 16) + oscillatingValue, boxWidth);
+  rect(boxWidth / 2, 290, (boxWidth * columns) + changeValue, boxWidth);
+  rect(boxWidth / 2, 370, (boxWidth * columns) + changeValue, boxWidth);
+  rect(boxWidth / 2, 870, (boxWidth * columns) + changeValue, boxWidth);
+  rect(boxWidth / 2, 590, (boxWidth * columns) + changeValue, boxWidth);
+  rect(370, 690, (boxWidth * 16) + changeValue, boxWidth);
+  rect(690, 150, (boxWidth * 16) + changeValue, boxWidth);
   rect(990, 150, boxWidth, boxWidth * 12);
   rect(1090, 610, boxWidth, boxWidth * 13);
   rect(1230, 610, boxWidth, boxWidth * 13);
-  rect(1270, 990, (boxWidth * 26) + oscillatingValue, boxWidth);
+  rect(1270, 990, (boxWidth * 26) + changeValue, boxWidth);
   rect(130, boxWidth / 2, boxWidth, boxWidth * 14);
   rect(850, 710, boxWidth * 4, boxWidth * 4);
   rect(320, 325, boxWidth * 2, boxWidth * 1.5);
@@ -70,7 +70,6 @@ function drawStaticShapes() {
   rect(470, 610, boxWidth * 6, boxWidth * 4);
   rect(1550, 910, boxWidth * 12, boxWidth * 4);
 
- 
   let strokeA = random(colors);
   let strokeB = random(colors);
   let strokeC = random(colors);
