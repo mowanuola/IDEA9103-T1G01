@@ -9,14 +9,13 @@ let innerRects = [];
 let rectangles = [];
 let artScale = 1.55;
 let gridWidth;
-let gridHeight; // Set your desired fixed width
+let gridHeight;
 let colorFill;
 let loopOn = true;
 
 /// Animation variables for easing and an incremntal valu for perlin noise motion animation
 let t = 0;
 let easing = 0.05;
-//
 let highlightColor = [238, 239, 233, 255];
 let initX, initY;
 let lineYPos = 1;
@@ -33,21 +32,28 @@ function setup() {
 function draw() {
   background(highlightColor);
 
-  fill(0); // text is white
+  // Add text to guide user on how to change the state of the artwork
+  fill(0);
   if (loopOn) {
-    text("Hit back space to stop", width / 2.2, 20);
+    text("Hit back space to pause", width / 2.2, 20);
   } else {
     text("Hit space bar to play", width / 2.2, 20);
   }
   t += 0.005;
+
+  // Scale the size of the grid up or down (as close to screen size as possible) depending on the width and height of the screen
   if (width > height * artScale) {
-    gridHeight = height * 0.85;
+    gridHeight = height * 0.95;
     gridWidth = gridHeight * artScale;
   } else {
-    gridWidth = width * 0.85;
+    gridWidth = width * 0.95;
     gridHeight = gridWidth / artScale;
   }
+
+  // Calculate the size of each box within the columns
   boxSize = gridWidth / columns;
+
+  // Calculate number of rows to be used in drawing some oother shapes and the grid
   rows = floor(gridHeight / boxSize);
 
   // Call the createGrid function to create the background of the art work
@@ -173,6 +179,7 @@ function createWhiteLines() {
     boxSize
   );
 }
+
 function createInnerRects() {
   // Draw inner white rectangles
   rect(initX + boxSize * 2, initY + boxSize * 2, boxSize * 5, boxSize * 6);
