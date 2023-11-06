@@ -1,3 +1,4 @@
+//Varible declarations
 let colors = ["#cc3300", "#cc6600", "#cc9966", "#669999"];
 let columns = 60;
 let rows;
@@ -6,14 +7,17 @@ let x;
 let y;
 let innerRects = [];
 let rectangles = [];
-let lines = [];
-let scale = 1.55;
-let margin = 20;
+let artScale = 1.55;
 let gridWidth;
 let gridHeight; // Set your desired fixed width
-let speed = 12;
-let t = 0; // Time variable for animation
+let colorFill;
+
+/// Animation variables for easing and an incremntal valu for perlin noise motion animation
+let t = 0;
 let easing = 0.05;
+//
+let highlightColor = [238, 239, 233, 255];
+let initX, initY;
 let lineYPos = 1;
 let lineXPos = 1;
 
@@ -26,102 +30,56 @@ function setup() {
 }
 
 function draw() {
-  background(238, 239, 233, 255);
+  background(highlightColor);
   t += 0.005;
-  if (width > height * scale) {
+  if (width > height * artScale) {
     gridHeight = height * 0.85;
-    gridWidth = gridHeight * scale;
+    gridWidth = gridHeight * artScale;
   } else {
     gridWidth = width * 0.85;
-    gridHeight = gridWidth / scale;
+    gridHeight = gridWidth / artScale;
   }
   boxSize = gridWidth / columns;
   rows = floor(gridHeight / boxSize);
+
+  // Call the createGrid function to create the background of the art work
   createGrid();
   for (let rect of rectangles) {
     rect.draw();
   }
 
+  // Calculate lineYpos and lineXPos based on the mouse position and use easing function to control flow and speed
   let dy = mouseY - lineYPos;
   lineYPos += dy * easing;
   let dx = mouseX - lineXPos;
   lineXPos += dx * easing;
+  rectMode(CORNER);
+  fill(highlightColor);
 
-  fill(238, 239, 233, 255);
-  rect(
-    width / 2,
-    map(noise(gridWidth * 0.5, gridHeight * 0.5, t), 0, 1, mouseY, gridHeight),
-    gridWidth,
-    boxSize
-  );
-  rect(lineXPos, height / 2 - boxSize / 2, boxSize, gridHeight);
-  // color =
-  //   colors[floor(map(noise(x * 0.1, y * 0.1, t), 0, 1, 0, colors.length))];
-  rect(width / 2, lineYPos, gridWidth, boxSize);
-  rect(width / 2, height / 4, gridWidth, boxSize);
-  rect(width / 2, height / 2, gridWidth, boxSize);
+  // Call the createWhiteLines function to create the gridlike overlay
+  createWhiteLines();
 
-  rect(width / 3, height / 2 - boxSize / 2, boxSize, gridHeight);
-  rect(width / 2, height / 2 - boxSize / 2, boxSize, gridHeight);
-  rect(
-    map(noise(gridWidth * 0.5, gridHeight * 0.5, t), 0, 1, mouseX, gridWidth),
-    height / 2 - boxSize / 2,
-    boxSize,
-    gridHeight
-  );
-  // rect(370, boxSize / 2, boxSize, boxSize * columns);
-  // rect(690, boxSize / 2, boxSize, boxSize * columns);
-  // rect(770, 610, boxSize * 9, boxSize * 13);
-  // rect(1190, boxSize / 2, boxSize, boxSize * columns);
-  // rect(1270, boxSize / 2, boxSize, boxSize * columns);
-  // rect(boxSize / 2, 290, boxSize * columns, boxSize);
-  // rect(boxSize / 2, 370, boxSize * columns, boxSize);
-  // rect(boxSize / 2, 870, boxSize * columns, boxSize);
-  // rect(boxSize / 2, 590, boxSize * columns, boxSize);
-  // rect(370, 690, boxSize * 16, boxSize);
-  // rect(690, 150, boxSize * 16, boxSize);
-  // rect(990, 150, boxSize, boxSize * 12);
-  // rect(1090, 610, boxSize, boxSize * 13);
-  // rect(1230, 610, boxSize, boxSize * 13);
-  // rect(1270, 990, boxSize * 26, boxSize);
-  // rect(130, boxSize / 2, boxSize, boxSize * 14);
-  // rect(850, 710, boxSize * 4, boxSize * 4);
-  // rect(320, 325, boxSize * 2, boxSize * 1.5);
-  // rect(410, 910, boxSize * 10, boxSize * 5);
-  // rect(1220, 410, boxSize * 2, boxSize * 8);
-  // rect(1330, 50, boxSize * 21, boxSize * 10);
-  // rect(750, 210, boxSize * 10, boxSize * 3);
-  // rect(50, 430, boxSize * 10, boxSize * 6);
-  // rect(50, 930, boxSize * 10, boxSize * 4);
-  // rect(470, 610, boxSize * 6, boxSize * 4);
-  // rect(1550, 910, boxSize * 12, boxSize * 4);
-  // let strokeA = random(colors);
-  // let strokeB = random(colors);
-  // let strokeC = random(colors);
-  // let strokeD = random(colors);
-  // fill(strokeA);
-  // stroke(strokeA);
-  // rect(770, 670, boxSize * 9, boxSize * 7);
-  // fill(strokeB);
-  // stroke(strokeB);
-  // rect(470, 930, boxSize * 6, boxSize * 2);
-  // fill(strokeC);
-  // stroke(strokeC);
-  // rect(1220, 450, boxSize * 2, boxSize * 4);
-  // fill(strokeD);
-  // stroke(strokeD);
-  // rect(810, 210, boxSize * 4, boxSize * 3);
-  // rect(110, 930, boxSize * 4, boxSize * 4);
+  // Call the creatInnerRects function to create white Boxes within specified positions of the grid
+  createInnerRects();
+
+  // Call the creatPerlinRects function to create colored Boxes within each white box creatd in line 63
+  createPerlinRects();
 }
 
 // UI Creation Functions
 function createGrid() {
   rectangles = [];
-
+  console.log(gridWidth / 2);
   for (let i = 0; i < columns; i++) {
     for (let j = 0; j < rows; j++) {
-      let x = i * boxSize + width / 2 - gridWidth / 2 + boxSize / 2;
-      let y = j * boxSize + height / 2 - gridHeight / 2;
+      let x = i * boxSize + (width / 2 - gridWidth / 2);
+      if (i === 0) {
+        initX = x;
+      }
+      let y = j * boxSize + (height / 2 - gridHeight / 2);
+      if (j === 0) {
+        initY = y;
+      }
       let rectangle;
       rectangle = new Rectangle(x, y, boxSize);
       rectangles.push(rectangle);
@@ -129,31 +87,132 @@ function createGrid() {
   }
 }
 
-function createLines(isHorizontal) {
-  let line;
-  let color = "238, 239, 233, 255";
+function createWhiteLines() {
+  // Lines that move in random directions based on perlin noise
+  rect(
+    map(noise(gridHeight * 0.5, gridWidth * 0.5, t), 0, 1, initX, gridWidth),
+    initY,
+    boxSize,
+    gridHeight - boxSize / 1.5
+  );
+  rect(
+    initX,
+    map(noise(gridWidth * 0.5, gridHeight * 0.5, t), 0, 1, initY, gridHeight),
+    gridWidth,
+    boxSize
+  );
 
-  if (isHorizontal)
-    line = new Rectangle(
-      boxSize / 2,
-      roundValueUp(random(0, height)),
-      boxSize * columns,
-      boxSize,
-      color
-    );
-  else {
-    line = new Rectangle(
-      roundValueUp(random(0, height)),
-      boxSize / 2,
-      boxSize,
-      boxSize * columns,
-      color
-    );
-  }
+  // Lines that ease into the x and y position of the mouse
+  rect(
+    constrain(lineXPos, initX, initX + boxSize * columns - boxSize),
+    initY,
+    boxSize,
+    gridHeight - boxSize / 1.5
+  );
+  rect(
+    initX,
+    constrain(lineYPos, initY, initY + boxSize * rows - boxSize),
+    gridWidth,
+    boxSize
+  );
 
-  innerRects.push(line);
+  // Draw Horizontal lines at specified positions throughout the grid
+  rect(initX, initY + boxSize * 10, gridWidth, boxSize);
+  rect(initX, initY + boxSize * 15, gridWidth, boxSize);
+  rect(initX, initY + boxSize * (columns / 2), gridWidth, boxSize);
+
+  // Draw Vertical lines at specified positions throughout the grid
+  rect(
+    initX + boxSize * (columns / 3) - boxSize,
+    initY,
+    boxSize,
+    gridHeight - boxSize / 1.4
+  );
+  rect(
+    initX + boxSize * (columns / 2),
+    initY,
+    boxSize,
+    gridHeight - boxSize / 1.4
+  );
+
+  // Draw short lines at specified positions to mimic the overlaying grid on Piet Mondrian's Boogiee Woogie
+  rect(initX + boxSize * 9, initY, boxSize, boxSize * 10);
+  rect(initX, initY + boxSize * (rows / 2), boxSize * (columns / 3), boxSize);
+  rect(initX + boxSize * 25, initY + boxSize * 15, boxSize, boxSize * 15);
+  rect(
+    initX + boxSize * (columns - 10),
+    initY + boxSize * 15,
+    boxSize,
+    boxSize * 23
+  );
+
+  rect(
+    initX + boxSize * (columns / 2),
+    initY + boxSize * 5,
+    boxSize * (columns / 2),
+    boxSize
+  );
+  rect(
+    initX + boxSize * (columns - 15),
+    initY + boxSize * 5,
+    boxSize,
+    boxSize * 6
+  );
+  rect(
+    initX + boxSize * (columns - 10),
+    initY + boxSize * (rows - 4),
+    boxSize * 10,
+    boxSize
+  );
 }
-
+function createInnerRects() {
+  // Draw inner white rectangles
+  rect(initX + boxSize * 2, initY + boxSize * 2, boxSize * 5, boxSize * 6);
+  rect(initX + boxSize * 22, initY + boxSize * 12, boxSize * 6, boxSize * 2);
+  rect(initX + boxSize * 35, initY + boxSize * 18, boxSize * 12, boxSize * 10);
+  rect(initX + boxSize * 39, initY + boxSize * 12, boxSize * 12, boxSize * 2);
+  rect(
+    initX + boxSize * 2,
+    initY + boxSize * (rows - 5),
+    boxSize * 15,
+    boxSize * 4
+  );
+  rect(initX + boxSize * 6.5, initY + boxSize * 15, boxSize * 7, boxSize * 4);
+  rect(initX + boxSize * 6.5, initY + boxSize * 15, boxSize * 7, boxSize * 4);
+  rect(
+    initX + boxSize * (columns - 12),
+    initY + boxSize,
+    boxSize * 12,
+    boxSize * 2
+  );
+}
+function createPerlinRects() {
+  // Place colored rectangles with colors that change randomly over time inside each white rectangle based on frameCount and perlin noise
+  let r = map(noise(frameCount * 0.01, initY * 0.1, t), 0, 1, 0, 255);
+  let g = map(noise(frameCount * 0.01, initY * 0.1, 1, t), 0, 1, 0, 255);
+  let b = map(noise(frameCount * 0.01, initY * 0.1, 2, t), 0, 1, 0, 255);
+  fill(r, g, b);
+  // let strokeA =
+  //   colors[floor(noise(initX * easing, initY * easing) * colors.length)];
+  // fill(strokeA);
+  rect(initX + boxSize, initY + boxSize, boxSize * 5, boxSize * 6);
+  rect(initX + boxSize * 23, initY + boxSize * 12, boxSize * 4, boxSize * 2);
+  rect(initX + boxSize * 35, initY + boxSize * 21, boxSize * 12, boxSize * 4);
+  rect(initX + boxSize * 42, initY + boxSize * 12, boxSize * 9, boxSize * 2);
+  rect(
+    initX + boxSize * 2,
+    initY + boxSize * (rows - 5),
+    boxSize * 10,
+    boxSize * 4
+  );
+  rect(initX + boxSize * 8, initY + boxSize * 16, boxSize * 3, boxSize * 3);
+  rect(
+    initX + boxSize * (columns - 9),
+    initY + boxSize * (rows - 3),
+    boxSize * 9,
+    boxSize * 3
+  );
+}
 //Utility Functions
 
 function roundValueUp(value) {
@@ -177,12 +236,12 @@ class Rectangle {
   }
 
   draw() {
-    // I wanted to include an animation that sllows the 
+    // I wanted to include an animation that slowly changes the color of the grid over time but was not very sure of how to approach it
     let r = map(noise(this.xPos * 0.1, this.yPos * 0.1, t), 0, 1, 0, 255);
     let g = map(noise(this.xPos * 0.1, this.yPos * 0.1, 1, t), 0, 1, 0, 255);
     let b = map(noise(this.xPos * 0.1, this.yPos * 0.1, 2, t), 0, 1, 0, 255);
     // fill(r, g, b);
-
+    noStroke();
     fill(this.color);
     rect(this.xPos, this.yPos, this.w, this.h);
   }
