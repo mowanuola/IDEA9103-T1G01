@@ -7,12 +7,12 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
   rectMode(CENTER);
-  frameRate(5);
+  frameRate(5); // Set the number of frames to be drawn every second for the animation.
 }
 
 // Create a grid of rectangles
 function createGrid() {
-  columns = Math.floor(height / boxWidth);
+  columns = Math.floor(height / boxWidth); // Calculate how many columns of rectangles can fit within the height of the canvas
   rectangles = []; 
   for (let x = boxWidth; x < width; x += boxWidth) {
     for (let y = boxWidth; y < height; y += boxWidth) {
@@ -30,7 +30,7 @@ function draw() {
   for (let rect of rectangles) {
     rect.draw();
   }
-  drawStaticShapes(); // Draw the static white and big colored rectangels on the top of the background
+  drawStaticShapes(); // Draw the static white and big colored rectangels on top of the background rectangles
 }
 
 function drawStaticShapes() {
@@ -39,11 +39,11 @@ function drawStaticShapes() {
 
   let time = millis();
   let changeValue = sin(time * 0.001) * 800; // The length of the changing white rectangles
-  let duration = 6000;
+  let duration = 6000; // The duration for the transparency change
   let transparency = (sin(time * TWO_PI / duration) + 1) /2; // The change of the transparency of the white rectangles
-  let numberScale = transparency * 255;
+  let numberScale = transparency * 255; // The scale of the transparency for RGBA
 
-  // Draw the rectangles over the background
+  // Draw the rectangles over the background 
   fill(238, 239, 233, numberScale);
   rect(290, boxWidth / 2, boxWidth, boxWidth * columns);
   rect(370, boxWidth / 2, boxWidth, boxWidth * columns);
