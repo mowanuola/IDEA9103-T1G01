@@ -11,6 +11,7 @@ let artScale = 1.55;
 let gridWidth;
 let gridHeight; // Set your desired fixed width
 let colorFill;
+let loopOn = true;
 
 /// Animation variables for easing and an incremntal valu for perlin noise motion animation
 let t = 0;
@@ -31,6 +32,13 @@ function setup() {
 
 function draw() {
   background(highlightColor);
+
+  fill(0); // text is white
+  if (loopOn) {
+    text("Hit back space to stop", width / 2.2, 20);
+  } else {
+    text("Hit space bar to play", width / 2.2, 20);
+  }
   t += 0.005;
   if (width > height * artScale) {
     gridHeight = height * 0.85;
@@ -241,7 +249,7 @@ class Rectangle {
     let g = map(noise(this.xPos * 0.1, this.yPos * 0.1, 1, t), 0, 1, 0, 255);
     let b = map(noise(this.xPos * 0.1, this.yPos * 0.1, 2, t), 0, 1, 0, 255);
     // fill(r, g, b);
-    noStroke();
+    // strokeWeight(1);
     fill(this.color);
     rect(this.xPos, this.yPos, this.w, this.h);
   }
@@ -252,4 +260,17 @@ function windowResized() {
   createGrid();
   // rectangles = [];
   // innerRects = [];
+}
+
+// UI Interaction
+
+function keyPressed() {
+  if (keyCode === 32) {
+    loop();
+    loopOn = true;
+  }
+  if (keyCode === 8) {
+    noLoop();
+    loopOn = false;
+  }
 }
